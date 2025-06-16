@@ -1,0 +1,257 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar {
+    background: #37b9f1;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .navbar .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  
+  .navbar .brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .navbar nav {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex-grow: 1;
+  }
+  
+  /* Updated nav link styles */
+  .navbar nav a {
+    color: rgba(255, 255, 255, 0.774); /* dull color */
+    text-decoration: none;
+    font-weight: normal;
+    transition: color 0.3s ease, font-weight 0.3s ease;
+  }
+  
+  .navbar nav a.active {
+    color: white !important;        /* white for active */
+    font-weight: bold !important;   /* bold for active */
+  }
+  
+  .navbar nav a:hover {
+    color: #fffefec4;
+    font-weight: bolder;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    width: 90%;
+    box-sizing: border-box;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  
+  .form-group {
+    position: relative;
+    margin-bottom: 45px;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 14px 12px 12px 12px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .form-group label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #999;
+    font-size: 14px;
+    background: white;
+    padding: 0 5px;
+    transition: 0.2s ease;
+    pointer-events: none;
+  }
+  
+  .form-group input:focus + label,
+  .form-group input:not(:placeholder-shown) + label,
+  .form-group select:focus + label,
+  .form-group select:not([value=""]) + label {
+    top: -10px;
+    left: 8px;
+    color: #37b9f1;
+    font-size: 14px;
+  }
+  
+  .form-group .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 3px;
+    display: none;
+  }
+  
+  button {
+    margin: 20px auto 0 auto;
+    display: block;
+    width: 45%;
+    padding: 12px;
+    background-color: #37b9f1;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #2c8cd3;
+  }
+  
+  .quote-results {
+    margin-top: 30px;
+  }
+  
+  .quote-results p {
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+  }
+  
+  .quote-results p span {
+    font-weight: bold;
+  }
+  
+  footer {
+    background: #37b9f1;
+    color: white;
+    padding: 40px 20px;
+    margin-top: 50px;
+  }
+  
+  footer a:hover {
+    color: #000000aa;
+    transition: color 0.3s ease;
+  }
+  
+  footer .footer-container {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+  }
+  
+  footer .brand-footer {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+  }
+  
+  footer .brand-footer img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+  
+  footer .contact-info {
+    font-size: 14px;
+    text-align: left;
+    flex-grow: 1;
+    min-width: 200px;
+  }
+  
+  footer .social-links {
+    display: flex;
+    gap: 20px;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  
+  /* Mobile Responsive Styles */
+  @media (max-width: 600px) {
+    .navbar {
+      padding: 10px 15px;
+    }
+  
+    .navbar nav {
+      justify-content: center;
+      gap: 15px;
+    }
+  
+    .container {
+      margin: 20px auto;
+      width: 95%;
+      padding: 20px;
+    }
+  
+    h2 {
+      font-size: 1.5rem;
+    }
+  
+    button {
+      width: 60%;
+      min-width: unset;
+      font-size: 15px;
+    }
+  
+    .quote-results p {
+      font-size: 0.9rem;
+    }
+  
+    footer {
+      padding: 30px 15px;
+    }
+  
+    footer .footer-container {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 15px;
+    }
+  
+    footer .contact-info {
+      min-width: unset;
+      text-align: center;
+    }
+  
+    footer .social-links {
+      font-size: 28px;
+    }
+  }
+  

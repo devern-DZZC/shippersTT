@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <title>{% block title %}ShippersTT{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="Profile" />
+      <strong>SHIPPERSTT</strong>
+    </div>
+    <nav>
+      <nav>
+        <a href="{{ url_for('home_page') }}" class="{% if request.path == url_for('home_page') %}active{% endif %}">Home</a>
+        <a href="{{ url_for('calculator_page') }}" class="{% if request.path == url_for('calculator_page') %}active{% endif %}">Calculator</a>
+        <a href="{{ url_for('about_page') }}" class="{% if request.path == url_for('about_page') %}active{% endif %}">About</a>
+        <a href="{{ url_for('contact_page') }}" class="{% if request.path == url_for('contact_page') %}active{% endif %}">Contact</a>
+      </nav>
+      
+    </nav>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-container">
+      <div class="brand-footer">
+        <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="ShippersTT Logo" />
+        <div>
+          <h3 style="margin: 0;">ShippersTT</h3>
+          <p style="margin: 0; font-size: 14px;">Affordable, reliable delivery.</p>
+        </div>
+      </div>
+
+      <div class="contact-info">
+        <p><strong>Email:</strong> shippers.tt@gmail.com</p>
+        <p><strong>Phone:</strong> (868) 463-2790</p>
+        <p><strong>Location:</strong> San Fernando, Trinidad</p>
+      </div>
+
+      <div class="social-links">
+        <a href="https://www.instagram.com/shippers.tt_" title="Instagram" style="color: white;">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.tiktok.com/@shippers.tt" title="TikTok" style="color: white;">
+          <i class="fab fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+
+    <hr style="margin: 30px 0; border-color: rgba(255,255,255,0.2);" />
+    <p style="text-align: center; font-size: 13px; margin: 0;">&copy; 2025 ShippersTT. All rights reserved.</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

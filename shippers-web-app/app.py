@@ -74,7 +74,19 @@ def init():
 
 @app.route('/', methods=['GET'])
 def home_page():
+  return render_template('index.html')
+
+@app.route('/calculator', methods=['GET'])
+def calculator_page():
   return render_template('calculator.html')
+
+@app.route('/about', methods=['GET'])
+def about_page():
+  return render_template('about.html')
+
+@app.route('/contact', methods=['GET'])
+def contact_page():
+  return render_template('contact.html')
 
 @app.route('/predict', methods=['POST'])
 def calculate():

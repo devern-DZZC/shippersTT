@@ -1,280 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <title>ShippersTT - Estimate Your Cost</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f3f3;
-      margin: 0;
-      padding: 0;
-    }
+{% extends 'layout.html' %}
 
-    .navbar {
-      background: #37b9f1;
-      border-bottom: 1px solid #ccc;
-      padding: 10px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: white;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+{% block title %}Estimate Your Cost - ShippersTT{% endblock %}
 
-    .navbar .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .navbar .brand img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-
-    .navbar nav {
-      display: flex;
-      gap: 30px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      flex-grow: 1;
-    }
-
-    .navbar nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .navbar nav a.active,
-    .navbar nav a:hover {
-      font-weight: bolder;
-      color: #fffefec4;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      text-align: center;
-      width: 90%;
-      box-sizing: border-box;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      font-size: 1.8rem;
-    }
-
-    .form-group {
-      position: relative;
-      margin-bottom: 35px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      padding: 10px;
-      padding-top: 18px;
-      border: 1px solid #ccc;
-      border-radius: 25px;
-      outline: none;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-
-    .form-group label {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: #999;
-      font-size: 14px;
-      background: white;
-      padding: 0 5px;
-      transition: 0.2s ease;
-      pointer-events: none;
-    }
-
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label,
-    .form-group select:focus + label,
-    .form-group select:not([value=""]) + label {
-      top: -10px;
-      left: 8px;
-      color: #37b9f1;
-      font-size: 14px;
-    }
-
-    .form-group .error {
-      color: red;
-      font-size: 12px;
-      margin-top: 3px;
-      display: none;
-    }
-
-    button {
-      margin: 20px auto 0 auto;
-      display: block;
-      width: 35%;
-      min-width: 120px;
-      padding: 12px;
-      background-color: #37b9f1;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #2c8cd3;
-    }
-
-    .quote-results {
-      margin-top: 30px;
-    }
-
-    .quote-results p {
-      margin: 5px 0;
-      display: flex;
-      justify-content: space-between;
-      font-size: 1rem;
-    }
-
-    .quote-results p span {
-      font-weight: bold;
-    }
-
-    footer {
-      background: #37b9f1;
-      color: white;
-      padding: 40px 20px;
-      margin-top: 50px;
-    }
-
-    footer a:hover {
-      color: #000000aa;
-      transition: color 0.3s ease;
-    }
-
-    footer .footer-container {
-      max-width: 1000px;
-      margin: auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      box-sizing: border-box;
-    }
-
-    footer .brand-footer {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-shrink: 0;
-    }
-
-    footer .brand-footer img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-    }
-
-    footer .contact-info {
-      font-size: 14px;
-      text-align: left;
-      flex-grow: 1;
-      min-width: 200px;
-    }
-
-    footer .social-links {
-      display: flex;
-      gap: 20px;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
-    /* Mobile Responsive Styles */
-    @media (max-width: 600px) {
-      .navbar {
-        padding: 10px 15px;
-      }
-
-      .navbar nav {
-        justify-content: center;
-        gap: 15px;
-      }
-
-      .container {
-        margin: 20px auto;
-        width: 95%;
-        padding: 20px;
-      }
-
-      h2 {
-        font-size: 1.5rem;
-      }
-
-      button {
-        width: 60%;
-        min-width: unset;
-        font-size: 15px;
-      }
-
-      .quote-results p {
-        font-size: 0.9rem;
-      }
-
-      footer {
-        padding: 30px 15px;
-      }
-
-      footer .footer-container {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 15px;
-      }
-
-      footer .contact-info {
-        min-width: unset;
-        text-align: center;
-      }
-
-      footer .social-links {
-        font-size: 28px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="navbar">
-    <div class="brand">
-      <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="Profile" />
-      <strong>SHIPPERSTT</strong>
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="calculator.html" class="active">Calculator</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-    </nav>
-  </div>
+{% block content %}
 
   <div class="container">
     <h2>ESTIMATE YOUR COST</h2>
@@ -290,16 +18,16 @@
         <select id="item-type" name="category" required>
           <option value="" disabled selected hidden></option>
           <option value="bag">Bags</option>
-          <option value="car parts">Car Parts and Accessories</option>
-          <option value="clothing">Clothing and Jewelry</option>
+          <option value="car parts">Car Parts</option>
+          <option value="clothing">Clothing and Accessories</option>
           <option value="electronics">Electronics</option>
-          <option value="laptop">Laptops</option>
+          <option value="laptop">Laptops/Tablets</option>
           <option value="perfume">Perfume/Colgne</option>
           <option value="phone">Phones</option>
           <option value="shoes">Shoes</option>
           <option value="other">Other</option>
         </select>
-        <label for="item-type">Item type</label>
+        <label for="item-type">Item Name</label>
         <div class="error" id="type-error">This is required</div>
       </div>
 
@@ -319,7 +47,7 @@
     </form>
 
     <div class="quote-results" id="results">
-      <p>Item Cost (TTD) <span id="item-cost">—</span></p>
+      <p>Item Cost <span id="item-cost">—</span></p>
       <p>US Sales Tax <span id="customs">—</span></p>
       <p>Shipping & Clearing <span id="shipping">—</span></p>
       <p>Service Charge <span id="service">—</span></p>
@@ -328,39 +56,11 @@
     </div>
   </div>
 
-  <footer>
-    <div class="footer-container">
-      <!-- Brand Section -->
-      <div class="brand-footer">
-        <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="ShippersTT Logo" />
-        <div>
-          <h3 style="margin: 0;">ShippersTT</h3>
-          <p style="margin: 0; font-size: 14px;">Affordable, reliable delivery.</p>
-        </div>
-      </div>
+  {% endblock %}
 
-      <!-- Contact Section -->
-      <div class="contact-info">
-        <p><strong>Email:</strong> shippers.tt@gmail.com</p>
-        <p><strong>Phone:</strong> (868) 463-2790</p>
-        <p><strong>Location:</strong> San Fernando, Trinidad</p>
-      </div>
+  {% block scripts %}
 
-      <!-- Social Links -->
-      <div class="social-links">
-        <a href="https://www.instagram.com/shippers.tt_" title="Instagram" style="color: white;">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="https://www.tiktok.com/@shippers.tt" title="TikTok" style="color: white;">
-          <i class="fab fa-tiktok"></i>
-        </a>
-      </div>
-    </div>
-
-    <hr style="margin: 30px 0; border-color: rgba(255,255,255,0.2);" />
-
-    <p style="text-align: center; font-size: 13px; margin: 0;">&copy; 2025 ShippersTT. All rights reserved.</p>
-  </footer>
+  
 
   <script>
     document.getElementById('quote-form').addEventListener('submit', function (e) {
@@ -393,5 +93,6 @@
         });
     });
   </script>
+  {% endblock %}
 </body>
 </html>
