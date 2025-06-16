@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>ShippersTT - Get a Quote</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background: #37b9f1;
+      border-bottom: 1px solid #ccc;
+      padding: 10px 30px;
+      height: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .navbar a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 35px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      padding: 10px;
+      padding-top: 18px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #999;
+      font-size: 14px;
+      background: white;
+      padding: 0 5px;
+      transition: 0.2s ease;
+      pointer-events: none;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+      top: -10px;
+      left: 8px;
+      color: #37b9f1;
+      font-size: 14px;
+    }
+
+    .form-group .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 3px;
+      display: none;
+    }
+
+    button {
+      margin: 20px auto 0 auto;
+      display: block;
+      width: 35%;
+      padding: 12px;
+      background-color: #37b9f1;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .quote-results {
+      margin-top: 30px;
+    }
+
+    .quote-results p {
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .quote-results p span {
+      font-weight: bold;
+    }
+    footer a:hover {
+    color: #000000aa;
+    transition: color 0.3s ease;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="brand" style="display: flex; align-items: center; gap: 10px;">
+        <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="Profile" style="width:40px; height:40px; border-radius:50%;">
+        <strong>SHIPPERSTT</strong>
+    </div>
+    <div style="display: flex; gap: 30px; padding: 10px; margin-right: 10px;">
+      <a style="color: #fffefec4;" href="index.html">Home</a>
+      <a href="calculator.html" style="font-weight: bolder;">Calculator</a>
+      <a style="color: #fffefec4;" href="#">About</a>
+      <a style="color: #fffefec4;" href="#">Contact</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>ESTIMATE YOUR COST</h2>
+
+    <form id="quote-form">
+      <div class="form-group">
+        <input type="text" id="description" placeholder=" " required />
+        <label for="description">Item/s</label>
+        <div class="error" id="desc-error">This is required</div>
+      </div>
+
+      <div class="form-group">
+        <select id="item-type" name="category" required>
+          <option value="" disabled selected hidden></option>
+          <option value="bag">Bags</option>
+          <option value="car parts">Car Parts and Accessories</option>
+          <option value="clothing">Clothing and Jewelry</option>
+          <option value="electronics">Electronics</option>
+          <option value="laptop">Laptops</option>
+          <option value="perfume">Perfume/Colgne</option>
+          <option value="phone">Phones</option>
+          <option value="shoes">Shoes</option>
+          <option value="other">Other</option>
+        </select>
+        <label for="item-type">Item type</label>
+        <div class="error" id="type-error">This is required</div>
+      </div>
+
+      <div class="form-group">
+        <input type="number" id="price" name="price" min="0" placeholder=" " required />
+        <label for="price">Item price (USD)</label>
+        <div class="error" id="price-error">Enter a valid price</div>
+      </div>
+
+      <div class="form-group">
+        <input type="number" id="weight" name="weight" min="0" placeholder=" " required />
+        <label for="weight">Weight (lbs)</label>
+        <div class="error" id="weight-error">Enter a valid weight</div>
+      </div>
+
+      <button type="submit">CALCULATE</button>
+    </form>
+
+    <div class="quote-results" id="results">
+      <p>Item Cost (TTD) <span id="item-cost">—</span></p>
+      <p>US Sales Tax <span id="customs">—</span></p>
+      <p>Shipping & Clearing <span id="shipping">—</span></p>
+      <p>Service Charge <span id="service">—</span></p>
+      <hr>
+      <p><strong>Estimated Total (TTD)</strong> <span id="total">—</span></p>
+    </div>
+  </div>
+  <footer style="background: #37b9f1; color: white; padding: 40px 20px; margin-top: 50px;">
+    <div style="max-width: 1000px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+      
+      <!-- Brand Section -->
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="ShippersTT Logo" style="width: 50px; height: 50px; border-radius: 50%;">
+        <div>
+          <h3 style="margin: 0;">ShippersTT</h3>
+          <p style="margin: 0; font-size: 14px;">Affordable, reliable delivery.</p>
+        </div>
+      </div>
+  
+      <!-- Contact Section -->
+      <div style="font-size: 14px; text-align: left;">
+        <p style="margin: 5px 0;"><strong>Email:</strong> shippers.tt@gmail.com</p>
+        <p style="margin: 5px 0;"><strong>Phone:</strong> (868) 463-2790</p>
+        <p style="margin: 5px 0;"><strong>Location:</strong> San Fernando, Trinidad</p>
+      </div>
+  
+      <!-- Social Links -->
+      <div style="display: flex; gap: 20px; font-size: 22px;">
+        <a href="https://www.instagram.com/shippers.tt_" title="Instagram" style="color: white;"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@shippers.tt" title="TikTok" style="color: white;"><i class="fab fa-tiktok"></i></a>
+    </div>
+    </div>
+  
+    <hr style="margin: 30px 0; border-color: rgba(255,255,255,0.2);">
+  
+    <p style="text-align: center; font-size: 13px; margin: 0;">&copy; 2025 ShippersTT. All rights reserved.</p>
+  </footer>
+  
+
+  <script>
+    document.getElementById('quote-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      fetch('/predict', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert("Error: " + data.error);
+            return;
+          }
+
+          document.getElementById("item-cost").textContent = `TTD $${data.item_cost.toFixed(2)}`;
+          document.getElementById("customs").textContent = `TTD $${data.tax.toFixed(2)}`;
+          document.getElementById("shipping").textContent = `TTD $${data.shipping.toFixed(2)}`;
+          document.getElementById("service").textContent = `TTD $${data.service_charge.toFixed(2)}`;
+          document.getElementById("total").textContent = `TTD $${data.total_cost.toFixed(2)}`;
+
+          document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Something went wrong!");
+        });
+    });
+  </script>
+</body>
+</html>
