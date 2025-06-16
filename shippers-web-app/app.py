@@ -118,27 +118,8 @@ def calculate():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
 
-
-
-
-
-"""
-print('Loading Model...')
-model = joblib.load('model/predictor.pkl')
-transformer = joblib.load('model/transformer.pkl') 
-print('Model Loaded!')
-
-sample_data = {
-    'category': ["phone"],
-    'weight': [2]
-}
-
-input_df = pd.DataFrame(sample_data)
-transformed_X = transformer.transform(input_df)
-pred = model.predict(transformed_X)
-print("Predicted Shipping Cost: ", round(pred[0],2))
-"""
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=8080)

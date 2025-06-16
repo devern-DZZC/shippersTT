@@ -38,17 +38,16 @@ body {
     flex-grow: 1;
   }
   
-  /* Updated nav link styles */
   .navbar nav a {
-    color: rgba(255, 255, 255, 0.774); /* dull color */
+    color: rgba(255, 255, 255, 0.774);
     text-decoration: none;
     font-weight: normal;
     transition: color 0.3s ease, font-weight 0.3s ease;
   }
   
   .navbar nav a.active {
-    color: white !important;        /* white for active */
-    font-weight: bold !important;   /* bold for active */
+    color: white !important; 
+    font-weight: bold !important; 
   }
   
   .navbar nav a:hover {
@@ -203,7 +202,7 @@ body {
     flex-shrink: 0;
   }
   
-  /* Mobile Responsive Styles */
+
   @media (max-width: 600px) {
     .navbar {
       padding: 10px 15px;
