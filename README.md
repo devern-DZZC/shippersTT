@@ -21,7 +21,7 @@ ShippersTT is a machine learning–powered web application that helps predict th
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript (optional: Tailwind or Bootstrap if used)
+- **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Flask (Python)
 - **ML Libraries**: `pandas`, `numpy`, `scikit-learn`
 - **Deployment**: Render (used due to serverless limitations with Vercel)
