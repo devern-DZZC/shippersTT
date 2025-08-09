@@ -8,8 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <title>{% block title %}ShippersTT - Your Trusted International Shopping Partner{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='calculator-styles.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='shop-styles.css') }}" />
   {% block head %}{% endblock %}
 </head>
 <body>
@@ -22,8 +23,7 @@
     <div class="nav-menu">
       <a href="{{ url_for('home_page') }}" class="nav-link {% if request.path == url_for('home_page') %}active{% endif %}">Home</a>
       <a href="{{ url_for('calculator_page') }}" class="nav-link {% if request.path == url_for('calculator_page') %}active{% endif %}">Calculator</a>
-      <a href="{{ url_for('about_page') }}" class="nav-link {% if request.path == url_for('about_page') %}active{% endif %}">About</a>
-      <a href="{{ url_for('contact_page') }}" class="nav-link {% if request.path == url_for('contact_page') %}active{% endif %}">Contact</a>
+      <a href="{{ url_for('about_page') }}" class="nav-link {% if request.path == url_for('about_page') %}active{% endif %}">Shop</a>
     </div>
   </nav>
 
@@ -61,7 +61,6 @@
         <p>International Shopping</p>
         <p>Shipping & Delivery</p>
         <p>Cost Estimation</p>
-        <p>Package Tracking</p>
       </div>
     </div>
     <div class="footer-bottom">
