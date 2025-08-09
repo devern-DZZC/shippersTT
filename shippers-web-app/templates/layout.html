@@ -4,65 +4,115 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <title>{% block title %}ShippersTT{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>{% block title %}ShippersTT - Your Trusted International Shopping Partner{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   {% block head %}{% endblock %}
 </head>
 <body>
-
   <!-- NAVBAR -->
-  <div class="navbar">
+  <nav class="navbar" id="navbar">
     <div class="brand">
-      <a href="{{ url_for('home_page') }}"><img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="Profile" /></a>
-      <a style="color: white; text-decoration: none;" href="{{ url_for('home_page') }}"><strong>SHIPPERSTT</strong></a>
+      <img src="{{ url_for('static', filename='shippers_logo.jpeg') }}" alt="ShippersTT Logo" />
+      <a href="{{ url_for('home_page') }}">SHIPPERSTT</a>
     </div>
-    <nav>
-      <nav>
-        <a href="{{ url_for('home_page') }}" class="{% if request.path == url_for('home_page') %}active{% endif %}">Home</a>
-        <a href="{{ url_for('calculator_page') }}" class="{% if request.path == url_for('calculator_page') %}active{% endif %}">Calculator</a>
-        <a href="{{ url_for('about_page') }}" class="{% if request.path == url_for('about_page') %}active{% endif %}">About</a>
-        <a href="{{ url_for('contact_page') }}" class="{% if request.path == url_for('contact_page') %}active{% endif %}">Contact</a>
-      </nav>
-      
-    </nav>
-  </div>
+    <div class="nav-menu">
+      <a href="{{ url_for('home_page') }}" class="nav-link {% if request.path == url_for('home_page') %}active{% endif %}">Home</a>
+      <a href="{{ url_for('calculator_page') }}" class="nav-link {% if request.path == url_for('calculator_page') %}active{% endif %}">Calculator</a>
+      <a href="{{ url_for('about_page') }}" class="nav-link {% if request.path == url_for('about_page') %}active{% endif %}">About</a>
+      <a href="{{ url_for('contact_page') }}" class="nav-link {% if request.path == url_for('contact_page') %}active{% endif %}">Contact</a>
+    </div>
+  </nav>
 
-  <!-- PAGE CONTENT -->
-  <div class="container">
+  <!-- MAIN CONTENT -->
+  <main>
     {% block content %}{% endblock %}
-  </div>
+  </main>
 
   <!-- FOOTER -->
-  <footer>
+  <footer id="contact">
     <div class="footer-container">
-      <div class="brand-footer">
-        <img src="{{ url_for('static', filename='IMG_9403.jpeg') }}" alt="ShippersTT Logo" />
-        <div>
-          <h3 style="margin: 0;">ShippersTT</h3>
-          <p style="margin: 0; font-size: 14px;">Affordable, reliable delivery.</p>
+      <div class="footer-brand">
+        <div class="brand-footer">
+          <img src="{{ url_for('static', filename='shippers_logo.jpeg') }}" alt="ShippersTT Logo" />
+          <h3>ShippersTT</h3>
+        </div>
+        <p class="footer-description">Your trusted partner for international shopping and reliable delivery throughout Trinidad and Tobago.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/shippers.tt_" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://www.tiktok.com/@shippers.tt" title="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
         </div>
       </div>
-
-      <div class="contact-info">
-        <p><strong>Email:</strong> shippers.tt@gmail.com</p>
-        <p><strong>Phone:</strong> (868) 463-2790</p>
-        <p><strong>Location:</strong> San Fernando, Trinidad</p>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>shippers.tt@gmail.com</p>
+        <p>(868) 463-2790</p>
+        <p>San Fernando, Trinidad</p>
       </div>
-
-      <div class="social-links">
-        <a href="https://www.instagram.com/shippers.tt_" title="Instagram" style="color: white;">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="https://www.tiktok.com/@shippers.tt" title="TikTok" style="color: white;">
-          <i class="fab fa-tiktok"></i>
-        </a>
+      <div class="footer-section">
+        <h4>Services</h4>
+        <p>International Shopping</p>
+        <p>Shipping & Delivery</p>
+        <p>Cost Estimation</p>
+        <p>Package Tracking</p>
       </div>
     </div>
-
-    <hr style="margin: 30px 0; border-color: rgba(255,255,255,0.2);" />
-    <p style="text-align: center; font-size: 13px; margin: 0;">&copy; 2025 ShippersTT. All rights reserved.</p>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ShippersTT. All rights reserved.</p>
+    </div>
   </footer>
 
-  {% block scripts %}{% endblock %}
+  {% block scripts %}
+  <script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Fade in animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+  {% endblock %}
 </body>
 </html>

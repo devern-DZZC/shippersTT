@@ -1,6 +1,143 @@
 {% extends 'layout.html' %}
 
-{% block title %}Estimate Your Cost - ShippersTT{% endblock %}
-
 {% block content %}
+  <!-- HERO SECTION -->
+  <section class="hero" id="home">
+    <div class="hero-background"></div>
+    <div class="container">
+      <h1>Shop internationally,<br>We'll ship it home.</h1>
+      <p>Access your favorite international brands with our trusted shipping service. Professional, reliable, and transparent.</p>
+      <a href="{{ url_for('calculator_page') }}" class="cta-button">Get a Quote</a>
+    </div>
+  </section>
+
+  <!-- PROCESS SECTION -->
+  <section class="process" id="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-number">1</div>
+          <h3>Send Link</h3>
+          <p>Forward us the link to any item you want from Amazon, SHEIN, Apple, Nike, Macy's, or other major retailers.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">2</div>
+          <h3>We Quote</h3>
+          <p>We calculate total costs including item price, shipping, taxes, and clearing fees. Complete transparency.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">3</div>
+          <h3>You Receive</h3>
+          <p>Pay 50% upfront, we handle the purchase and shipping. Your items arrive safely in 2-4 weeks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US SECTION -->
+  <section class="why-choose" id="why-choose">
+    <div class="container">
+      <div class="why-choose-container">
+        <div class="why-content">
+          <h2>Why Choose Us</h2>
+          <div class="benefits">
+            <div class="benefit fade-in">
+              <div class="benefit-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="benefit-content">
+                <h3>Transparent Pricing</h3>
+                <p>No hidden fees. Get complete cost breakdowns upfront including all taxes and shipping charges.</p>
+              </div>
+            </div>
+            <div class="benefit fade-in">
+              <div class="benefit-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="benefit-content">
+                <h3>Reliable Delivery</h3>
+                <p>Professional packaging and secure handling ensure your items arrive safely with our nationwide service.</p>
+              </div>
+            </div>
+            <div class="benefit fade-in">
+              <div class="benefit-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="benefit-content">
+                <h3>No Credit Card Required</h3>
+                <p>We handle international purchases for you. Pay locally with flexible payment options.</p>
+              </div>
+            </div>
+            <div class="benefit fade-in">
+              <div class="benefit-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="benefit-content">
+                <h3>Personal Service</h3>
+                <p>Dedicated customer support throughout your shopping journey from order to delivery.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonials fade-in">
+          <h3>Testimonials</h3>
+          <div class="testimonial">
+            <div class="testimonial-content">
+              <p class="testimonial-text">"Excellent service! My iPhone arrived perfectly packaged and exactly when promised. Very professional and trustworthy."</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">M</div>
+                <div class="testimonial-info">
+                  <h4>Marcus R.</h4>
+                  <p>Port of Spain</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial">
+            <div class="testimonial-content">
+              <p class="testimonial-text">"Used ShippersTT for my Nike orders. Great communication, fair pricing, and reliable delivery. Highly recommended!"</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">S</div>
+                <div class="testimonial-info">
+                  <h4>Sarah L.</h4>
+                  <p>San Fernando</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST SECTION -->
+  <section class="trust-section" id="trust">
+    <div class="container">
+      <div class="trust-container">
+        <div class="trust-stats fade-in">
+          <div class="trust-stat">
+            <div class="trust-stat-number">1000+</div>
+            <div class="trust-stat-label">Orders Delivered</div>
+          </div>
+          <div class="trust-stat">
+            <div class="trust-stat-number">2-4</div>
+            <div class="trust-stat-label">Week Delivery</div>
+          </div>
+          <div class="trust-stat">
+            <div class="trust-stat-number">100%</div>
+            <div class="trust-stat-label">Satisfaction Rate</div>
+          </div>
+        </div>
+        
+        <div class="retailer-logos fade-in">
+          <i class="fab fa-amazon retailer-logo" title="Amazon"></i>
+          <i class="fab fa-apple retailer-logo" title="Apple"></i>
+          <i class="fas fa-shopping-bag retailer-logo" title="SHEIN"></i>
+          <i class="fas fa-tshirt retailer-logo" title="Nike"></i>
+          <i class="fas fa-store retailer-logo" title="Macy's"></i>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

@@ -3,96 +3,134 @@
 {% block title %}Estimate Your Cost - ShippersTT{% endblock %}
 
 {% block content %}
+<div class="calculator-container">
+  <h2>ESTIMATE YOUR COST</h2>
 
-  <div class="container">
-    <h2>ESTIMATE YOUR COST</h2>
-
-    <form id="quote-form">
-      <div class="form-group">
-        <input type="text" id="description" placeholder=" " required />
-        <label for="description">Item Name</label>
-        <div class="error" id="desc-error">This is required</div>
-      </div>
-
-      <div class="form-group">
-        <select id="item-type" name="category" required>
-          <option value="" disabled selected hidden></option>
-          <option value="bag">Bags</option>
-          <option value="car parts">Car Parts</option>
-          <option value="clothing">Clothing and Accessories</option>
-          <option value="electronics">Electronics</option>
-          <option value="laptop">Laptops/Tablets</option>
-          <option value="perfume">Perfume/Colgne</option>
-          <option value="phone">Phones</option>
-          <option value="shoes">Shoes</option>
-          <option value="other">Other</option>
-        </select>
-        <label for="item-type">Item Category</label>
-        <div class="error" id="type-error">This is required</div>
-      </div>
-
-      <div class="form-group">
-        <input type="number" id="price" name="price" min="0" placeholder=" " required />
-        <label for="price">Item price (USD)</label>
-        <div class="error" id="price-error">Enter a valid price</div>
-      </div>
-
-      <div class="form-group">
-        <input type="number" id="weight" name="weight" min="0" placeholder=" " required />
-        <label for="weight">Weight (lbs)</label>
-        <div class="error" id="weight-error">Enter a valid weight</div>
-      </div>
-
-      <button type="submit">CALCULATE</button>
-    </form>
-
-    <div class="quote-results" id="results">
-      <p>Item Cost <span id="item-cost">—</span></p>
-      <p>US Sales Tax <span id="customs">—</span></p>
-      <p>Shipping & Clearing <span id="shipping">—</span></p>
-      <p>Service Charge <span id="service">—</span></p>
-      <hr />
-      <p><strong>Estimated Total (TTD)</strong> <span id="total">—</span></p>
+  <form id="quote-form">
+    <div class="form-group">
+      <input type="text" id="description" placeholder=" " required />
+      <label for="description">Item Name</label>
+      <div class="error" id="desc-error">This is required</div>
     </div>
+
+    <div class="form-group">
+      <select id="item-type" name="category" required>
+        <option value="" disabled selected hidden></option>
+        <option value="bag">Bags</option>
+        <option value="car parts">Car Parts</option>
+        <option value="clothing">Clothing and Accessories</option>
+        <option value="electronics">Electronics</option>
+        <option value="laptop">Laptops/Tablets</option>
+        <option value="perfume">Perfume/Cologne</option>
+        <option value="phone">Phones</option>
+        <option value="shoes">Shoes</option>
+        <option value="other">Other</option>
+      </select>
+      <label for="item-type">Item Category</label>
+      <div class="error" id="type-error">This is required</div>
+    </div>
+
+    <div class="form-group">
+      <input type="number" id="price" name="price" min="0" placeholder=" " required />
+      <label for="price">Item price (USD)</label>
+      <div class="error" id="price-error">Enter a valid price</div>
+    </div>
+
+    <div class="form-group">
+      <input type="number" id="weight" name="weight" min="0" placeholder=" " required />
+      <label for="weight">Weight (lbs)</label>
+      <div class="error" id="weight-error">Enter a valid weight</div>
+    </div>
+
+    <button type="submit" class="calculate-btn">CALCULATE</button>
+  </form>
+
+  <div class="quote-results" id="results" style="display: none;">
+    <p>Item Cost <span id="item-cost">—</span></p>
+    <p>US Sales Tax <span id="customs">—</span></p>
+    <p>Shipping & Clearing <span id="shipping">—</span></p>
+    <p>Service Charge <span id="service">—</span></p>
+    <hr />
+    <p><strong>Estimated Total (TTD)</strong> <span id="total">—</span></p>
   </div>
+</div>
+{% endblock %}
 
-  {% endblock %}
-
-  {% block scripts %}
-
-  
-
-  <script>
-    document.getElementById('quote-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(this);
-
-      fetch('/predict', {
-        method: 'POST',
-        body: formData,
+{% block scripts %}
+<script>
+  document.getElementById('quote-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    
+    // Clear previous errors
+    document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
+    
+    // Validate inputs
+    let isValid = true;
+    const description = document.getElementById('description');
+    const itemType = document.getElementById('item-type');
+    const price = document.getElementById('price');
+    const weight = document.getElementById('weight');
+    
+    if (!description.value.trim()) {
+      document.getElementById('desc-error').style.display = 'block';
+      isValid = false;
+    }
+    if (itemType.value === "") {
+      document.getElementById('type-error').style.display = 'block';
+      isValid = false;
+    }
+    if (!price.value || parseFloat(price.value) <= 0) {
+      document.getElementById('price-error').style.display = 'block';
+      isValid = false;
+    }
+    if (!weight.value || parseFloat(weight.value) <= 0) {
+      document.getElementById('weight-error').style.display = 'block';
+      isValid = false;
+    }
+    
+    if (!isValid) return;
+    
+    const formData = new FormData(this);
+    const calculateBtn = document.querySelector('.calculate-btn');
+    
+    // Show loading state
+    calculateBtn.disabled = true;
+    calculateBtn.textContent = 'Calculating...';
+    
+    fetch('/predict', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.error) {
-            alert('Error: ' + data.error);
-            return;
-          }
-
-          document.getElementById('item-cost').textContent = `TTD $${data.item_cost.toFixed(2)}`;
-          document.getElementById('customs').textContent = `TTD $${data.tax.toFixed(2)}`;
-          document.getElementById('shipping').textContent = `TTD $${data.shipping.toFixed(2)}`;
-          document.getElementById('service').textContent = `TTD $${data.service_charge.toFixed(2)}`;
-          document.getElementById('total').textContent = `TTD $${data.total_cost.toFixed(2)}`;
-
-          document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        })
-        .catch((err) => {
-          console.error(err);
-          alert('Something went wrong!');
-        });
-    });
-  </script>
-  {% endblock %}
-</body>
-</html>
+      .then((data) => {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        // Update results
+        document.getElementById('item-cost').textContent = `TTD $${data.item_cost.toFixed(2)}`;
+        document.getElementById('customs').textContent = `TTD $${data.tax.toFixed(2)}`;
+        document.getElementById('shipping').textContent = `TTD $${data.shipping.toFixed(2)}`;
+        document.getElementById('service').textContent = `TTD $${data.service_charge.toFixed(2)}`;
+        document.getElementById('total').textContent = `TTD $${data.total_cost.toFixed(2)}`;
+        
+        // Show results
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+      })
+      .catch((err) => {
+        console.error('Error:', err);
+        alert('Error: ' + err.message);
+      })
+      .finally(() => {
+        calculateBtn.disabled = false;
+        calculateBtn.textContent = 'CALCULATE';
+      });
+  });
+</script>
+{% endblock %}
