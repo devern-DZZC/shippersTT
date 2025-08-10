@@ -11,6 +11,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='calculator-styles.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='shop-styles.css') }}" />
+  <link rel="icon" href="{{ url_for('static', filename='shippers_logo.jpeg') }}" type="image/x-icon">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='shippers_logo.jpeg') }}" type="image/x-icon">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='shippers_logo.jpeg') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='shippers_logo.jpeg') }}">
+
+<meta name="msapplication-TileImage" content="{{ url_for('static', filename='shippers_logo.jpeg') }}">
   {% block head %}{% endblock %}
 </head>
 <body>

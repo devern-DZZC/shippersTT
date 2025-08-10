@@ -79,20 +79,40 @@
   }
   
   /* ===== Navigation ===== */
+  /* ===== Navigation ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 8%;
+  background: var(--blue);
+  box-shadow: var(--shadow-sm);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* Mobile styles (under 768px) */
+@media (max-width: 768px) {
   .navbar {
-    display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Stack items vertically */
     align-items: center;
-    padding: 20px 8%;
-    background: var(--blue);
-    box-shadow: var(--shadow-sm);
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    transition: all 0.3s ease;
+    padding: 15px 5%;
+    gap: 15px;
   }
-  
+
+  /* Optional: Add a subtle divider between brand and menu */
+  .navbar::after {
+    content: '';
+    display: block;
+    width: 80%;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+    margin: 10px 0;
+  }
+}
   .navbar.scrolled {
     padding: 15px 8%;
     box-shadow: 0 2px 20px rgba(0,0,0,0.1);
