@@ -117,7 +117,7 @@
         document.getElementById('customs').textContent = `TTD $${data.tax.toFixed(2)}`;
         document.getElementById('shipping').textContent = `TTD $${data.shipping.toFixed(2)}`;
         document.getElementById('service').textContent = `TTD $${data.service_charge.toFixed(2)}`;
-        document.getElementById('total').textContent = `TTD $${data.total_cost.toFixed(2)}`;
+        document.getElementById('total').textContent = `{data.total_cost.toFixed(2)}`;
         
         // Show results
         document.getElementById('results').style.display = 'block';

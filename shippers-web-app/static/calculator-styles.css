@@ -168,7 +168,14 @@ button[type="submit"]:hover {
   
   .calculator-container {
     padding: 32px;
+    margin-top: 55px;
   }
+
+  .form-group{
+    margin-bottom: 20px;
+  }
+
+ 
   
   .calculator-container h2 {
     font-size: 28px;
