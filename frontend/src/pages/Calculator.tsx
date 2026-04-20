@@ -91,9 +91,8 @@ export default function Calculator() {
       <section className="calculator-focus-section">
         <div className="container calculator-focus-wrap">
           <div className="calculator-focus-intro fade-in">
-            <span className="eyebrow">Main tool</span>
             <h1>Estimate your order.</h1>
-            <p>Fast, clear, and built to be the center of the experience.</p>
+            <p>Fast, clear, and centered on the tool itself.</p>
             <div className="calculator-quick-notes">
               {quickNotes.map((note) => (
                 <span key={note}>{note}</span>
