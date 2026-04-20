@@ -1,0 +1,16 @@
+# Development / notebook / experimentation dependencies (not needed to run the API).
+pytest==7.0.1
+Flask-Migrate==3.1.0
+Flask-Reuploaded==1.2.0
+psycopg2-binary
+
+# If your trained model/pickles require CatBoost at runtime, move this back into
+# requirements.txt. Otherwise keep it dev-only.
+catboost
+
+# Common plotting/exploration tools (optional)
+matplotlib
+seaborn
+plotly
+graphviz
+
