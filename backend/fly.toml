@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for shipperstt on 2025-09-10T00:04:25Z
+# fly.toml app configuration file generated for shipperstt-ge7ozq on 2026-04-20T05:55:51Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'shipperstt'
-primary_region = 'mia'
+app = 'shipperstt-ge7ozq'
+primary_region = 'iad'
 
 [build]
 

@@ -89,7 +89,12 @@
   display: none;
 }
 
-button[type="submit"] {
+.error.visible {
+  display: block;
+}
+
+button[type="submit"],
+.calculate-btn {
   width: 100%;
   padding: 16px;
   background: #0077b6;
@@ -103,10 +108,18 @@ button[type="submit"] {
   margin-top: 12px;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover,
+.calculate-btn:hover {
   background: #01486f;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+button[type="submit"]:disabled,
+.calculate-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .quote-results {
@@ -115,7 +128,6 @@ button[type="submit"]:hover {
   background: #f8fafc;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  display: none;
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -165,18 +177,16 @@ button[type="submit"]:hover {
   .calculator-page {
     padding: 80px 5%;
   }
-  
+
   .calculator-container {
     padding: 32px;
     margin-top: 55px;
   }
 
-  .form-group{
+  .form-group {
     margin-bottom: 20px;
   }
 
- 
-  
   .calculator-container h2 {
     font-size: 28px;
     margin-bottom: 32px;
@@ -187,16 +197,16 @@ button[type="submit"]:hover {
   .calculator-container {
     padding: 24px;
   }
-  
+
   #quote-form {
     gap: 24px;
   }
-  
+
   .form-group input,
   .form-group select {
     padding: 14px 16px;
   }
-  
+
   .quote-results {
     padding: 24px;
   }
