@@ -34,6 +34,12 @@ const categoryLabels: Record<string, string> = {
 
 const quickNotes = ["USD item price", "Weight in lbs", "Total shown in TTD"];
 
+function labelClass(active: boolean) {
+  return `pointer-events-none absolute left-4 rounded-full bg-white px-2 font-medium text-ink-500 transition-all duration-200 ${
+    active ? "top-0 -translate-y-1/2 text-xs text-brand-500" : "top-1/2 -translate-y-1/2 text-sm"
+  }`;
+}
+
 export default function Calculator() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -87,123 +93,183 @@ export default function Calculator() {
   }
 
   return (
-    <div className="page calculator-page calculator-focus-page">
-      <section className="calculator-focus-section">
-        <div className="container calculator-focus-wrap">
-          <div className="calculator-focus-intro fade-in">
-            <h1>Estimate your order.</h1>
-            <p>Fast, clear, and centered on the tool itself.</p>
-            <div className="calculator-quick-notes">
+    <div className="px-4 pb-24">
+      <section className="flex min-h-[calc(100svh-7rem)] items-center py-5 lg:py-10">
+        <div className="mx-auto grid w-full max-w-4xl gap-5">
+          <div className="fade-in mx-auto max-w-3xl text-center">
+            <h1 className="text-balance text-[clamp(2.8rem,5vw,4.7rem)] font-extrabold tracking-[-0.05em] text-ink-900 lg:whitespace-nowrap">
+              Estimate your order.
+            </h1>
+            <p className="mx-auto mt-3 max-w-[30ch] text-base leading-7 text-ink-600 sm:text-lg">
+              Fast, clear, and centered on the tool itself.
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2.5">
               {quickNotes.map((note) => (
-                <span key={note}>{note}</span>
+                <span
+                  key={note}
+                  className="rounded-full border border-brand-200/70 bg-white/80 px-3.5 py-2 text-xs font-extrabold tracking-[0.04em] text-brand-700 shadow-brand-soft sm:text-sm"
+                >
+                  {note}
+                </span>
               ))}
             </div>
           </div>
 
-          <div className="calculator-stage fade-in">
-            <div className="calculator-card calculator-card-featured">
-              <div className="calculator-card-topline">
+          <div className="fade-in mx-auto w-full max-w-3xl">
+            <div className="rounded-[2rem] border border-brand-200/70 bg-[radial-gradient(circle_at_top_right,rgba(48,227,255,0.16),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(240,248,255,0.96))] p-7 shadow-brand-card sm:p-8">
+              <div className="flex items-center justify-between gap-4 text-xs font-extrabold uppercase tracking-[0.12em] text-ink-500">
                 <span>ShippersTT estimator</span>
                 <span>Live quote</span>
               </div>
 
-              <form className="quote-form calculator-form-featured" onSubmit={handleSubmit} noValidate>
-                <div className="input-group input-group-featured">
-                  <label htmlFor="description">Item name</label>
-                  <input
-                    id="description"
-                    type="text"
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
-                    placeholder="Example: Nike Air Max 270"
-                  />
-                  {errors.description && <p className="error-message">{errors.description}</p>}
-                </div>
-
-                <div className="input-group input-group-featured">
-                  <label htmlFor="category">Category</label>
-                  <select
-                    id="category"
-                    value={category}
-                    onChange={(event) => setCategory(event.target.value)}
-                  >
-                    <option value="">Select a category</option>
-                    {categoryOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {categoryLabels[option]}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && <p className="error-message">{errors.category}</p>}
-                </div>
-
-                <div className="input-row calculator-main-grid">
-                  <div className="input-group input-group-featured">
-                    <label htmlFor="price">Item price (USD)</label>
+              <form className="mt-6 grid gap-5" onSubmit={handleSubmit} noValidate>
+                <div className="grid gap-2">
+                  <div className="relative">
                     <input
-                      id="price"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={price}
-                      onChange={(event) => setPrice(event.target.value)}
-                      placeholder="150.00"
+                      id="description"
+                      type="text"
+                      value={description}
+                      onChange={(event) => setDescription(event.target.value)}
+                      placeholder=" "
+                      className="peer h-[3.75rem] w-full rounded-3xl border border-ink-200 bg-white/92 px-4 pt-5 text-base text-ink-900 shadow-brand-soft outline-none transition focus:border-brand-400 focus:shadow-[0_0_0_4px_rgba(48,227,255,0.16)]"
                     />
-                    {errors.price && <p className="error-message">{errors.price}</p>}
+                    <label htmlFor="description" className={labelClass(Boolean(description))}>
+                      Item name
+                    </label>
+                  </div>
+                  {errors.description && (
+                    <p className="text-sm font-semibold text-red-500">{errors.description}</p>
+                  )}
+                </div>
+
+                <div className="grid gap-2">
+                  <div className="relative">
+                    <select
+                      id="category"
+                      value={category}
+                      onChange={(event) => setCategory(event.target.value)}
+                      className="h-[3.75rem] w-full rounded-3xl border border-ink-200 bg-white/92 px-4 pt-5 text-base text-ink-900 shadow-brand-soft outline-none transition focus:border-brand-400 focus:shadow-[0_0_0_4px_rgba(48,227,255,0.16)]"
+                    >
+                      <option value="">Select a category</option>
+                      {categoryOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {categoryLabels[option]}
+                        </option>
+                      ))}
+                    </select>
+                    <label htmlFor="category" className={labelClass(Boolean(category))}>
+                      Category
+                    </label>
+                  </div>
+                  {errors.category && (
+                    <p className="text-sm font-semibold text-red-500">{errors.category}</p>
+                  )}
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="grid gap-2">
+                    <div className="relative">
+                      <input
+                        id="price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={price}
+                        onChange={(event) => setPrice(event.target.value)}
+                        placeholder=" "
+                        className="peer h-[3.75rem] w-full rounded-3xl border border-ink-200 bg-white/92 px-4 pt-5 text-base text-ink-900 shadow-brand-soft outline-none transition focus:border-brand-400 focus:shadow-[0_0_0_4px_rgba(48,227,255,0.16)]"
+                      />
+                      <label htmlFor="price" className={labelClass(Boolean(price))}>
+                        Item price (USD)
+                      </label>
+                    </div>
+                    {errors.price && (
+                      <p className="text-sm font-semibold text-red-500">{errors.price}</p>
+                    )}
                   </div>
 
-                  <div className="input-group input-group-featured">
-                    <label htmlFor="weight">Weight (lbs)</label>
-                    <input
-                      id="weight"
-                      type="number"
-                      min="0"
-                      step="0.1"
-                      value={weight}
-                      onChange={(event) => setWeight(event.target.value)}
-                      placeholder="2.5"
-                    />
-                    {errors.weight && <p className="error-message">{errors.weight}</p>}
+                  <div className="grid gap-2">
+                    <div className="relative">
+                      <input
+                        id="weight"
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        value={weight}
+                        onChange={(event) => setWeight(event.target.value)}
+                        placeholder=" "
+                        className="peer h-[3.75rem] w-full rounded-3xl border border-ink-200 bg-white/92 px-4 pt-5 text-base text-ink-900 shadow-brand-soft outline-none transition focus:border-brand-400 focus:shadow-[0_0_0_4px_rgba(48,227,255,0.16)]"
+                      />
+                      <label htmlFor="weight" className={labelClass(Boolean(weight))}>
+                        Weight (lbs)
+                      </label>
+                    </div>
+                    {errors.weight && (
+                      <p className="text-sm font-semibold text-red-500">{errors.weight}</p>
+                    )}
                   </div>
                 </div>
 
-                <button type="submit" className="button-primary wide-button calculator-submit" disabled={loading}>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex h-[3.75rem] w-full items-center justify-center rounded-full bg-gradient-to-r from-brand-500 to-brand-600 px-7 text-base font-bold text-white shadow-[0_16px_30px_rgba(15,94,156,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(15,94,156,0.28)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+                >
                   {loading ? "Calculating estimate..." : "Calculate estimate"}
                 </button>
               </form>
             </div>
 
             {results && (
-              <div className="results-wrap results-wrap-centered" ref={resultsRef}>
-                <div className="results-card results-card-featured">
-                  <div className="results-header-minimal">
-                    <span className="eyebrow">Estimate result</span>
-                    <h2>{description || "Your item"}</h2>
-                    <p>{category ? categoryLabels[category] : "Selected item"}</p>
+              <div ref={resultsRef} className="mt-5">
+                <div className="rounded-[2rem] border border-brand-200/70 bg-[radial-gradient(circle_at_top_right,rgba(48,227,255,0.14),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(242,249,255,0.95))] p-7 shadow-brand-card sm:p-8">
+                  <div className="text-center">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-brand-500/10 px-3.5 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-600">
+                      <span className="h-2 w-2 rounded-full bg-brand-400 shadow-[0_0_0_6px_rgba(48,227,255,0.16)]"></span>
+                      Estimate result
+                    </span>
+                    <h2 className="mt-4 text-balance text-[clamp(1.9rem,3vw,2.6rem)] font-extrabold tracking-[-0.04em] text-ink-900 lg:whitespace-nowrap">
+                      {description || "Your item"}
+                    </h2>
+                    <p className="mt-2 text-sm text-ink-600 sm:text-base">
+                      {category ? categoryLabels[category] : "Selected item"}
+                    </p>
                   </div>
 
-                  <div className="results-list results-list-featured">
-                    <div>
-                      <span>Item cost</span>
-                      <strong>TTD ${results.item_cost.toFixed(2)}</strong>
+                  <div className="mt-6 grid gap-3">
+                    <div className="flex flex-col gap-1 rounded-[1.25rem] border border-brand-100 bg-white/88 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="text-sm text-ink-600 sm:text-base">Item cost</span>
+                      <strong className="text-lg font-bold text-ink-900">
+                        TTD ${results.item_cost.toFixed(2)}
+                      </strong>
                     </div>
-                    <div>
-                      <span>U.S. sales tax</span>
-                      <strong>TTD ${results.tax.toFixed(2)}</strong>
+                    <div className="flex flex-col gap-1 rounded-[1.25rem] border border-brand-100 bg-white/88 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="text-sm text-ink-600 sm:text-base">U.S. sales tax</span>
+                      <strong className="text-lg font-bold text-ink-900">
+                        TTD ${results.tax.toFixed(2)}
+                      </strong>
                     </div>
-                    <div>
-                      <span>Shipping &amp; clearing</span>
-                      <strong>TTD ${results.shipping.toFixed(2)}</strong>
+                    <div className="flex flex-col gap-1 rounded-[1.25rem] border border-brand-100 bg-white/88 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="text-sm text-ink-600 sm:text-base">
+                        Shipping &amp; clearing
+                      </span>
+                      <strong className="text-lg font-bold text-ink-900">
+                        TTD ${results.shipping.toFixed(2)}
+                      </strong>
                     </div>
-                    <div>
-                      <span>Logistics fee</span>
-                      <strong>TTD ${results.service_charge.toFixed(2)}</strong>
+                    <div className="flex flex-col gap-1 rounded-[1.25rem] border border-brand-100 bg-white/88 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="text-sm text-ink-600 sm:text-base">Logistics fee</span>
+                      <strong className="text-lg font-bold text-ink-900">
+                        TTD ${results.service_charge.toFixed(2)}
+                      </strong>
                     </div>
                   </div>
 
-                  <div className="results-total results-total-featured">
-                    <span>Estimated total</span>
-                    <strong>TTD ${results.total_cost.toFixed(2)}</strong>
+                  <div className="mt-6 flex flex-col gap-1 border-t border-brand-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <span className="text-base font-semibold text-ink-600">Estimated total</span>
+                    <strong className="text-2xl font-extrabold text-brand-700">
+                      TTD ${results.total_cost.toFixed(2)}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -214,3 +280,4 @@ export default function Calculator() {
     </div>
   );
 }
+

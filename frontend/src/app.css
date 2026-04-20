@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: #f0f9ff;
+  --color-brand-100: #d9f2ff;
+  --color-brand-200: #b9e6ff;
+  --color-brand-300: #87d6ff;
+  --color-brand-400: #30e3ff;
+  --color-brand-500: #0077b6;
+  --color-brand-600: #0a5f95;
+  --color-brand-700: #143c69;
+  --color-brand-800: #0f2744;
+
+  --color-accent-400: #30e3ff;
+
+  --color-ink-50: #f8fafc;
+  --color-ink-100: #eef4f8;
+  --color-ink-200: #d9e4ee;
+  --color-ink-300: #c1cfdb;
+  --color-ink-500: #7b8a99;
+  --color-ink-600: #5f7082;
+  --color-ink-700: #425466;
+  --color-ink-900: #102033;
+  --color-ink-950: #0c1726;
+
+  --color-surface-50: #f6fbff;
+  --color-surface-100: #edf7ff;
+
+  --shadow-brand-soft: 0 18px 40px rgba(15, 39, 68, 0.08);
+  --shadow-brand-card: 0 24px 60px rgba(20, 60, 105, 0.12);
+  --shadow-brand-pill: 0 14px 30px rgba(16, 32, 51, 0.08);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(48,227,255,0.14),transparent_28%),linear-gradient(180deg,#f4fbff_0%,#ffffff_42%,#f6fbff_100%)] font-sans text-ink-900 antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)),
+      radial-gradient(circle at 1px 1px, rgba(15, 39, 68, 0.06) 1px, transparent 0);
+    background-size: auto, 26px 26px;
+    opacity: 0.24;
+    z-index: -1;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+}
+
+@layer utilities {
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#navbar.scrolled .navbar-shell {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 119, 182, 0.14);
+  box-shadow: 0 18px 34px rgba(16, 32, 51, 0.12);
+}
+
