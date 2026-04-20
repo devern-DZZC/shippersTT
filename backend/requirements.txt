@@ -1,22 +1,15 @@
-# scikit-learn 1.5.x has no pre-built wheels for Python 3.13 on Windows, so pip
-# falls back to a Meson source build that often fails locally. 1.6+ ships cp313
-# wheels. Docker still uses Python 3.9 in the Dockerfile for a stable runtime.
-pandas
-numpy
-scikit-learn>=1.6.1,<2
-catboost
-joblib
-click==8.1.7
 Flask==3.0.0
+gunicorn==20.1.0
+Werkzeug==3.0.1
 Flask-Cors==4.0.0
+python-dotenv==0.21.1
+# Auth (keep if/when you add auth routes)
 Flask-JWT-Extended==4.6.0
+# ML inference runtime (must match what your pickles need)
+numpy
+pandas
+scikit-learn>=1.6.1,<2
+joblib
+
 Flask-SQLAlchemy==3.0.1
 SQLAlchemy>=1.4,<2.0
-gunicorn==20.1.0
-itsdangerous==2.1.2
-python-dotenv==0.21.1
-Flask-Migrate==3.1.0
-Flask-Reuploaded==1.2.0
-psycopg2-binary
-pytest==7.0.1
-Werkzeug==3.0.1
