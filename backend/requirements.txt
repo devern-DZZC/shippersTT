@@ -4,9 +4,9 @@
 # Notes:
 # - Avoid heavy/unused deps (e.g. catboost, matplotlib, plotly) to keep deploy
 #   bundles small on serverless platforms.
-# - scikit-learn 1.5.x has no pre-built wheels for Python 3.13 on Windows, so pip
-#   falls back to a Meson source build that often fails locally. 1.6+ ships cp313
-#   wheels.
+# Pin scikit-learn to the version used when saving model/transformer.pkl
+# (joblib pickles are not portable across sklearn minor versions).
+# If you re-export pickles from a newer sklearn, bump this pin to match.
 #
 
 # Web server / API
@@ -22,7 +22,7 @@ Flask-JWT-Extended==4.6.0
 # ML inference runtime (must match what your pickles need)
 numpy
 pandas
-scikit-learn>=1.6.1,<2
+scikit-learn==1.6.1
 joblib
 
 # DB libs are optional right now (you currently init SQLAlchemy but don't use it
