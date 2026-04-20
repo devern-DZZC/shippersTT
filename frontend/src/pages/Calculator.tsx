@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { predictShipping, type PredictResponse } from "../api/predict";
 
 interface FormErrors {
@@ -7,6 +7,32 @@ interface FormErrors {
   price?: string;
   weight?: string;
 }
+
+const categoryOptions = [
+  "bag",
+  "car parts",
+  "clothing",
+  "electronics",
+  "laptop",
+  "perfume",
+  "phone",
+  "shoes",
+  "other",
+];
+
+const categoryLabels: Record<string, string> = {
+  bag: "Bags",
+  "car parts": "Car Parts",
+  clothing: "Clothing & Accessories",
+  electronics: "Electronics",
+  laptop: "Laptops & Tablets",
+  perfume: "Perfume & Cologne",
+  phone: "Phones",
+  shoes: "Shoes",
+  other: "Other",
+};
+
+const quickNotes = ["USD item price", "Weight in lbs", "Total shown in TTD"];
 
 export default function Calculator() {
   const [description, setDescription] = useState("");
@@ -19,159 +45,173 @@ export default function Calculator() {
   const resultsRef = useRef<HTMLDivElement>(null);
 
   function validate(): FormErrors {
-    const errs: FormErrors = {};
-    if (!description.trim()) errs.description = "This is required";
-    if (!category) errs.category = "This is required";
-    if (!price || parseFloat(price) <= 0) errs.price = "Enter a valid price";
-    if (!weight || parseFloat(weight) <= 0) errs.weight = "Enter a valid weight";
-    return errs;
+    const nextErrors: FormErrors = {};
+
+    if (!description.trim()) nextErrors.description = "Please enter the item name.";
+    if (!category) nextErrors.category = "Please choose a category.";
+    if (!price || Number(price) <= 0) nextErrors.price = "Enter a valid USD price.";
+    if (!weight || Number(weight) <= 0) nextErrors.weight = "Enter a valid weight in pounds.";
+
+    return nextErrors;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const errs = validate();
-    setErrors(errs);
-    if (Object.keys(errs).length > 0) return;
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const nextErrors = validate();
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
 
     setLoading(true);
     setResults(null);
+
     try {
       const data = await predictShipping({
         category,
-        price: parseFloat(price),
-        weight: parseInt(weight, 10),
+        price: Number(price),
+        weight: Number(weight),
       });
+
       setResults(data);
-      // Scroll to results after render
-      setTimeout(
-        () => resultsRef.current?.scrollIntoView({ behavior: "smooth" }),
-        50
-      );
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Unknown error";
-      alert("Error: " + message);
+      window.setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 80);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(`Error: ${message}`);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="calculator-page">
-      <div className="calculator-container">
-        <h2>ESTIMATE YOUR COST</h2>
+    <div className="page calculator-page calculator-focus-page">
+      <section className="calculator-focus-section">
+        <div className="container calculator-focus-wrap">
+          <div className="calculator-focus-intro fade-in">
+            <span className="eyebrow">Main tool</span>
+            <h1>Estimate your order.</h1>
+            <p>Fast, clear, and built to be the center of the experience.</p>
+            <div className="calculator-quick-notes">
+              {quickNotes.map((note) => (
+                <span key={note}>{note}</span>
+              ))}
+            </div>
+          </div>
 
-        <form id="quote-form" onSubmit={handleSubmit} noValidate>
-          {/* Item Name */}
-          <div className="form-group">
-            <input
-              type="text"
-              id="description"
-              placeholder=" "
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-            <label htmlFor="description">Item Name</label>
-            {errors.description && (
-              <div className="error visible">{errors.description}</div>
+          <div className="calculator-stage fade-in">
+            <div className="calculator-card calculator-card-featured">
+              <div className="calculator-card-topline">
+                <span>ShippersTT estimator</span>
+                <span>Live quote</span>
+              </div>
+
+              <form className="quote-form calculator-form-featured" onSubmit={handleSubmit} noValidate>
+                <div className="input-group input-group-featured">
+                  <label htmlFor="description">Item name</label>
+                  <input
+                    id="description"
+                    type="text"
+                    value={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                    placeholder="Example: Nike Air Max 270"
+                  />
+                  {errors.description && <p className="error-message">{errors.description}</p>}
+                </div>
+
+                <div className="input-group input-group-featured">
+                  <label htmlFor="category">Category</label>
+                  <select
+                    id="category"
+                    value={category}
+                    onChange={(event) => setCategory(event.target.value)}
+                  >
+                    <option value="">Select a category</option>
+                    {categoryOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {categoryLabels[option]}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category && <p className="error-message">{errors.category}</p>}
+                </div>
+
+                <div className="input-row calculator-main-grid">
+                  <div className="input-group input-group-featured">
+                    <label htmlFor="price">Item price (USD)</label>
+                    <input
+                      id="price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={price}
+                      onChange={(event) => setPrice(event.target.value)}
+                      placeholder="150.00"
+                    />
+                    {errors.price && <p className="error-message">{errors.price}</p>}
+                  </div>
+
+                  <div className="input-group input-group-featured">
+                    <label htmlFor="weight">Weight (lbs)</label>
+                    <input
+                      id="weight"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={weight}
+                      onChange={(event) => setWeight(event.target.value)}
+                      placeholder="2.5"
+                    />
+                    {errors.weight && <p className="error-message">{errors.weight}</p>}
+                  </div>
+                </div>
+
+                <button type="submit" className="button-primary wide-button calculator-submit" disabled={loading}>
+                  {loading ? "Calculating estimate..." : "Calculate estimate"}
+                </button>
+              </form>
+            </div>
+
+            {results && (
+              <div className="results-wrap results-wrap-centered" ref={resultsRef}>
+                <div className="results-card results-card-featured">
+                  <div className="results-header-minimal">
+                    <span className="eyebrow">Estimate result</span>
+                    <h2>{description || "Your item"}</h2>
+                    <p>{category ? categoryLabels[category] : "Selected item"}</p>
+                  </div>
+
+                  <div className="results-list results-list-featured">
+                    <div>
+                      <span>Item cost</span>
+                      <strong>TTD ${results.item_cost.toFixed(2)}</strong>
+                    </div>
+                    <div>
+                      <span>U.S. sales tax</span>
+                      <strong>TTD ${results.tax.toFixed(2)}</strong>
+                    </div>
+                    <div>
+                      <span>Shipping &amp; clearing</span>
+                      <strong>TTD ${results.shipping.toFixed(2)}</strong>
+                    </div>
+                    <div>
+                      <span>Logistics fee</span>
+                      <strong>TTD ${results.service_charge.toFixed(2)}</strong>
+                    </div>
+                  </div>
+
+                  <div className="results-total results-total-featured">
+                    <span>Estimated total</span>
+                    <strong>TTD ${results.total_cost.toFixed(2)}</strong>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-
-          {/* Category */}
-          <div className="form-group">
-            <select
-              id="item-type"
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            >
-              <option value="" disabled hidden></option>
-              <option value="bag">Bags</option>
-              <option value="car parts">Car Parts</option>
-              <option value="clothing">Clothing and Accessories</option>
-              <option value="electronics">Electronics</option>
-              <option value="laptop">Laptops/Tablets</option>
-              <option value="perfume">Perfume/Cologne</option>
-              <option value="phone">Phones</option>
-              <option value="shoes">Shoes</option>
-              <option value="other">Other</option>
-            </select>
-            <label htmlFor="item-type">Item Category</label>
-            {errors.category && (
-              <div className="error visible">{errors.category}</div>
-            )}
-          </div>
-
-          {/* Price */}
-          <div className="form-group">
-            <input
-              type="number"
-              id="price"
-              name="price"
-              min="0"
-              placeholder=" "
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-            <label htmlFor="price">Item price (USD)</label>
-            {errors.price && (
-              <div className="error visible">{errors.price}</div>
-            )}
-          </div>
-
-          {/* Weight */}
-          <div className="form-group">
-            <input
-              type="number"
-              id="weight"
-              name="weight"
-              min="0"
-              placeholder=" "
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              required
-            />
-            <label htmlFor="weight">Weight (lbs)</label>
-            {errors.weight && (
-              <div className="error visible">{errors.weight}</div>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="calculate-btn"
-            disabled={loading}
-          >
-            {loading ? "Calculating..." : "CALCULATE"}
-          </button>
-        </form>
-
-        {results && (
-          <div className="quote-results" ref={resultsRef}>
-            <p>
-              Item Cost <span>TTD ${results.item_cost.toFixed(2)}</span>
-            </p>
-            <p>
-              US Sales Tax <span>TTD ${results.tax.toFixed(2)}</span>
-            </p>
-            <p>
-              Shipping &amp; Clearing{" "}
-              <span>TTD ${results.shipping.toFixed(2)}</span>
-            </p>
-            <p>
-              Service Charge{" "}
-              <span>TTD ${results.service_charge.toFixed(2)}</span>
-            </p>
-            <hr />
-            <p>
-              <strong>Estimated Total (TTD)</strong>{" "}
-              <span>${results.total_cost.toFixed(2)}</span>
-            </p>
-          </div>
-        )}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
