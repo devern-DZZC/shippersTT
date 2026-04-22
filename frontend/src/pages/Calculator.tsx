@@ -248,14 +248,14 @@ export default function Calculator() {
                       { label: "Item Cost", value: results.item_cost },
                       { label: "US Sales Tax", value: results.tax },
                       { label: "Shipping & Clearing", value: results.shipping },
-                      { label: "Service Charge", value: results.service_charge },
+                      { label: "Logistics Fee", value: results.service_charge },
                     ].map((row) => (
                       <div
                         key={row.label}
-                        className="flex items-center justify-between py-2"
+                        className="flex items-center justify-between py-2 gap-2"
                       >
-                        <span className="text-gray-500 text-sm">{row.label}</span>
-                        <span className="font-display font-semibold text-navy-900">
+                        <span className="text-gray-500 text-[13px] sm:text-sm whitespace-nowrap">{row.label}</span>
+                        <span className="font-display font-semibold text-navy-900 text-sm sm:text-base whitespace-nowrap">
                           TTD ${row.value.toFixed(2)}
                         </span>
                       </div>

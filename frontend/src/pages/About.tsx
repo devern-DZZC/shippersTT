@@ -78,7 +78,7 @@ export default function About() {
         <div className="relative max-w-3xl mx-auto px-[8%] text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-accent-400 text-sm font-medium font-display mb-4">
             <i className="fas fa-store text-xs" />
-            Partner Retailers
+            Shop With Us
           </div>
           <h1 className="font-display text-3xl md:text-5xl font-extrabold text-white mb-2">
             Stores We <span className="gradient-text">Ship From</span>
