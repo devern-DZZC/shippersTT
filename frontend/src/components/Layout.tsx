@@ -39,7 +39,6 @@ export default function Layout() {
       { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
 
-    // Re-observe whenever the page changes (DOM settles on next tick)
     const timer = setTimeout(() => {
       document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
     }, 50);
@@ -67,7 +66,7 @@ export default function Layout() {
   return (
     <>
       <Navbar />
-      <main>
+      <main className="pt-20">
         <Outlet />
       </main>
       <Footer />
