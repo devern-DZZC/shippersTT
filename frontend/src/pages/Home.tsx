@@ -69,26 +69,36 @@ export default function Home() {
   const planeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
       if (!planeRef.current) return;
-      const scrollY = window.scrollY;
-      const maxScroll = window.innerHeight * 1.5;
-      const progress = Math.min(scrollY / maxScroll, 1);
 
-      // Sweeping curved flight path (starts lower, goes higher)
-      const translateX = progress * window.innerWidth * 1.2;
-      const translateY = -progress * window.innerHeight * 0.9 + Math.sin(progress * Math.PI * 1.5) * 150;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const maxScroll = window.innerHeight * 1.5;
+          const progress = Math.min(scrollY / maxScroll, 1);
 
-      // Dynamic rotation (tilts based on the curve's slope)
-      const baseRotation = 15; // Noto/Apple emoji usually faces right, tilt up slightly
-      const dynamicTilt = Math.cos(progress * Math.PI * 1.5) * 20;
-      const rotate = baseRotation + dynamicTilt;
+          // Sweeping curved flight path (starts lower, goes higher)
+          const translateX = progress * window.innerWidth * 1.2;
+          const translateY = -progress * window.innerHeight * 0.9 + Math.sin(progress * Math.PI * 1.5) * 150;
 
-      // Shrinks as it flies away and fades out eventually
-      const scale = 1 - progress * 0.5;
+          // Dynamic rotation (tilts based on the curve's slope)
+          const baseRotation = 15; // Noto/Apple emoji usually faces right, tilt up slightly
+          const dynamicTilt = Math.cos(progress * Math.PI * 1.5) * 20;
+          const rotate = baseRotation + dynamicTilt;
 
-      planeRef.current.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotate}deg) scale(${scale})`;
-      planeRef.current.style.opacity = `${1 - progress * 0.8}`;
+          // Shrinks as it flies away and fades out eventually
+          const scale = 1 - progress * 0.5;
+
+          // Use translate3d to force hardware acceleration on mobile
+          planeRef.current!.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) rotate(${rotate}deg) scale(${scale})`;
+          planeRef.current!.style.opacity = `${1 - progress * 0.8}`;
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     // Initialize plane position immediately
@@ -121,10 +131,10 @@ export default function Home() {
         {/* Animated Plane Image — smooth sweeping scroll motion */}
         <div
           ref={planeRef}
-          className="absolute bottom-[2%] left-[2%] md:bottom-[5%] md:-left-[5%] pointer-events-none select-none transition-transform duration-100 ease-linear z-0"
+          className="absolute bottom-[2%] left-[2%] md:bottom-[5%] md:-left-[5%] pointer-events-none select-none z-0"
           style={{
             opacity: 1,
-            transform: "translate(0, 0) rotate(15deg) scale(1)"
+            transform: "translate3d(0, 0, 0) rotate(15deg) scale(1)"
           }}
         >
           <img
@@ -139,13 +149,13 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-3xl mx-auto px-[8%] text-center">
+        <div className="relative z-10 max-w-3xl mx-auto px-[8%] text-center -mt-24 md:mt-0">
           <div
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-accent-400 text-sm font-medium mb-8"
             style={{ animation: "fade-up 0.8s ease forwards" }}
           >
             <i className="fas fa-plane-departure text-xs" />
-            Trinidad &amp; Tobago's Trusted Skybox Service
+            Trinidad &amp; Tobago's Trusted Shipping Service
           </div>
 
           <h1
@@ -161,7 +171,7 @@ export default function Home() {
             className="text-white/60 text-lg md:text-xl max-w-lg mx-auto mb-10 leading-relaxed"
             style={{ animation: "fade-up 0.8s ease 0.3s both" }}
           >
-            We buy from your favorite US stores and fly it straight to your
+            We buy from your favorite US stores and deliver it straight to your
             door. Professional, reliable, transparent.
           </p>
 
@@ -184,13 +194,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-white/60 text-xs font-display tracking-widest uppercase">Scroll</span>
-          <div className="w-5 h-8 rounded-full border-2 border-white/30 flex justify-center pt-1">
-            <div className="w-1 h-2 rounded-full bg-white/60 animate-bounce" />
-          </div>
-        </div>
+
       </section>
 
       {/* ════════════════ HOW IT WORKS ════════════════ */}
@@ -338,7 +342,7 @@ export default function Home() {
                     color: "from-brand-500 to-brand-400",
                   },
                   {
-                    text: '"Used ShippersTT for my Nike orders. Great communication, fair pricing, and reliable delivery. Highly recommended!"',
+                    text: '"Used ShippersTT for my Shein orders. Great communication, fair pricing, and reliable delivery. Highly recommended!"',
                     initial: "S",
                     name: "Sarah L.",
                     location: "San Fernando",
