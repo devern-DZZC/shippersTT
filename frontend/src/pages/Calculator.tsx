@@ -43,7 +43,7 @@ export default function Calculator() {
       });
       setResults(data);
       setTimeout(
-        () => resultsRef.current?.scrollIntoView({ behavior: "smooth" }),
+        () => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
         50
       );
     } catch (err: unknown) {
