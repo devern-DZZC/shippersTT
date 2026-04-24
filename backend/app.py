@@ -111,15 +111,30 @@ def calculate():
             category = str(data["category"])
             weight = int(data["weight"])
 
-        input_data = {"category": [category], "weight": [weight]}
+        # Impose a minimum billable weight of 2 lbs for the model to prevent undercharging
+        prediction_weight = max(2, weight)
+        
+        input_data = {"category": [category], "weight": [prediction_weight]}
         input_df = pd.DataFrame(input_data)
         transformed_df = transformer.transform(input_df)
         shipping = float(model.predict(transformed_df)[0])
 
         tt_cost = round(price * 6.8, 2)
         tax = round(tt_cost * 0.07, 2)
-        service_charge = round((tt_cost + tax + shipping) * 0.15, 2)
-        total_cost = round(tt_cost + tax + shipping + service_charge, 2)
+        
+        # Calculate base service charge (15%)
+        base_service_charge = (tt_cost + tax + shipping) * 0.15
+        
+        # Enforce a minimum service charge (profit) of $50 TTD
+        raw_service_charge = round(max(50.0, base_service_charge), 2)
+        raw_total_cost = tt_cost + tax + shipping + raw_service_charge
+        
+        # Round final cost to the nearest ten (1-4 down, 5-9 up)
+        rounded_total_cost = int((raw_total_cost + 5) // 10 * 10)
+        
+        # Adjust service charge so that all fees add up to the rounded final cost
+        service_charge = round(rounded_total_cost - tt_cost - tax - shipping, 2)
+        total_cost = float(rounded_total_cost)
 
         return jsonify(
             {
