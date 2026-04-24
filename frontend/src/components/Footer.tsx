@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-navy-950 text-white overflow-hidden">
+    <footer className="relative bg-navy-900 text-white overflow-hidden">
       {/* Wave SVG Divider */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -translate-y-[1px]">
         <svg

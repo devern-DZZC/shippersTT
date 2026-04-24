@@ -5,16 +5,15 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `relative py-1 text-sm font-medium transition-colors duration-300 ${
-      isActive
-        ? "text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-accent-400 after:rounded"
-        : "text-white/60 hover:text-white"
+    `relative py-1 text-sm font-medium transition-colors duration-300 ${isActive
+      ? "text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-accent-400 after:rounded"
+      : "text-white/60 hover:text-white"
     }`;
 
   return (
     <nav
       id="navbar"
-      className="fixed top-0 w-full z-50 flex items-center justify-between px-[8%] py-5 bg-navy-900/90 backdrop-blur-lg border-b border-white/5 transition-all duration-300 [&.scrolled]:py-3 [&.scrolled]:bg-navy-950/95 [&.scrolled]:shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
+      className="fixed top-0 w-full z-50 flex items-center justify-between px-[8%] py-5 bg-navy-900/90 backdrop-blur-lg border-b border-white/5 transition-all duration-300 [&.scrolled]:py-3 [&.scrolled]:bg-navy-900/95 [&.scrolled]:shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
     >
       {/* Brand */}
       <Link to="/" className="flex items-center gap-3 no-underline group">
@@ -55,11 +54,10 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden absolute top-full left-0 w-full bg-navy-950/98 backdrop-blur-xl border-t border-white/5 flex flex-col items-center gap-6 py-8 transition-all duration-400 ${
-          menuOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-4 pointer-events-none"
-        }`}
+        className={`md:hidden absolute top-full left-0 w-full bg-navy-950/98 backdrop-blur-xl border-t border-white/5 flex flex-col items-center gap-6 py-8 transition-all duration-400 ${menuOpen
+          ? "opacity-100 translate-y-0 pointer-events-auto"
+          : "opacity-0 -translate-y-4 pointer-events-none"
+          }`}
       >
         <NavLink to="/" end className={linkClass} onClick={() => setMenuOpen(false)}>Home</NavLink>
         <NavLink to="/calculator" className={linkClass} onClick={() => setMenuOpen(false)}>Calculator</NavLink>
