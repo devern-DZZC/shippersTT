@@ -1,24 +1,16 @@
-import joblib
-import pandas as pd
 import os
-import datetime
-from flask import Flask, request, jsonify
+import threading
+import time
+from collections import defaultdict, deque
+from typing import Any
+
+from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import (
-    JWTManager,
-    create_access_token,
-    jwt_required,
-    set_access_cookies,
-    unset_jwt_cookies,
-    current_user,
-)
 
 from models import db
+from services.classification import classify_extension_payload
+from services.quote_engine import generate_quote_breakdown
 
-print("Loading Model...")
-model = joblib.load("model/predictor.pkl")
-transformer = joblib.load("model/transformer.pkl")
-print("Model Loaded!")
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -26,90 +18,105 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "fallback_secret_key")
-app.config["JWT_ACCESS_COOKIE_NAME"] = "access_token"
-app.config["JWT_REFRESH_COOKIE_NAME"] = "refresh_token"
-app.config["JWT_TOKEN_LOCATION"] = ["cookies", "headers"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=15)
-app.config["JWT_COOKIE_SECURE"] = True
-app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "fallback_jwt_secret")
-app.config["JWT_COOKIE_CSRF_PROTECT"] = False
-app.config["JWT_HEADER_NAME"] = "Cookie"
+app.config["EXTENSION_BEARER_TOKEN"] = os.environ.get("EXTENSION_BEARER_TOKEN", "")
+app.config["EXTENSION_RATE_LIMIT"] = int(os.environ.get("EXTENSION_RATE_LIMIT", "60"))
+app.config["EXTENSION_RATE_WINDOW_SECONDS"] = int(
+    os.environ.get("EXTENSION_RATE_WINDOW_SECONDS", "60")
+)
 
 db.init_app(app)
 app.app_context().push()
 
-# Allow the Vite dev origin and any origins listed in CORS_ORIGINS env var.
-# In production set CORS_ORIGINS to your deployed frontend URL.
 _raw_origins = os.environ.get("CORS_ORIGINS", "http://localhost:5173")
-allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
-
+allowed_origins = [origin.strip() for origin in _raw_origins.split(",") if origin.strip()]
 CORS(app, origins=allowed_origins, supports_credentials=True)
 
-jwt = JWTManager(app)
+
+class InMemoryRateLimiter:
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._requests: dict[str, deque[float]] = defaultdict(deque)
+
+    def allow(self, key: str, limit: int, window_seconds: int) -> bool:
+        now = time.time()
+        with self._lock:
+            queue = self._requests[key]
+            while queue and now - queue[0] > window_seconds:
+                queue.popleft()
+            if len(queue) >= limit:
+                return False
+            queue.append(now)
+            return True
 
 
-@jwt.user_identity_loader
-def user_identity_lookup(identity):
-    return identity
+extension_rate_limiter = InMemoryRateLimiter()
 
 
-@jwt.user_lookup_loader
-def user_lookup_callback(_jwt_header, jwt_data):
-    from models import User  # local import to avoid circular
-
-    identity = jwt_data["sub"]
-    return User.query.get(str(identity))
+with app.app_context():
+    db.create_all()
 
 
-def login_user(username, password):
-    from models import User
-
-    user = User.query.filter_by(username=username).first()
-    if user and user.check_password(password):
-        token = create_access_token(identity=str(user.id))
-        return token
-    return None
-
-
-def initialize_db():
+def initialize_db() -> None:
     db.drop_all()
     db.create_all()
 
 
-# ---------------------------------------------------------------------------
-# Health check — used by Fly.io and other deployment platforms
-# ---------------------------------------------------------------------------
+def _require_extension_auth() -> tuple[dict[str, str], int] | None:
+    expected_token = app.config.get("EXTENSION_BEARER_TOKEN", "").strip()
+    if not expected_token:
+        return None
+
+    auth_header = request.headers.get("Authorization", "")
+    scheme, _, provided_token = auth_header.partition(" ")
+    if scheme != "Bearer" or provided_token != expected_token:
+        return {"error": "Unauthorized"}, 401
+
+    return None
+
+
+def _enforce_extension_rate_limit() -> tuple[dict[str, str], int] | None:
+    identifier = request.headers.get("Authorization") or request.remote_addr or "anonymous"
+    limit = int(app.config["EXTENSION_RATE_LIMIT"])
+    window_seconds = int(app.config["EXTENSION_RATE_WINDOW_SECONDS"])
+    if not extension_rate_limiter.allow(identifier, limit, window_seconds):
+        return {"error": "Rate limit exceeded"}, 429
+    return None
+
+
+def _parse_predict_request() -> tuple[float, str, int]:
+    data: Any
+    if request.is_json:
+        data = request.get_json() or {}
+        price = float(data["price"])
+        category = str(data["category"])
+        weight = int(data["weight"])
+    else:
+        data = request.form
+        price = float(data["price"])
+        category = str(data["category"])
+        weight = int(data["weight"])
+
+    return price, category, weight
+
+
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"}), 200
 
 
-# ---------------------------------------------------------------------------
-# DB init (keep for convenience but protect in production)
-# ---------------------------------------------------------------------------
 @app.route("/init", methods=["GET"])
 def init():
     initialize_db()
     return jsonify({"message": "database initialised"}), 200
 
 
-# ---------------------------------------------------------------------------
-# Prediction endpoint — accepts both form-data and JSON
-# ---------------------------------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def calculate():
     try:
-        # Support both application/json and multipart/form-data
-        if request.is_json:
-            data = request.get_json()
-            price = float(data["price"])
-            category = str(data["category"])
-            weight = int(data["weight"])
-        else:
-            data = request.form
-            price = float(data["price"])
-            category = str(data["category"])
-            weight = int(data["weight"])
+        price, category, weight = _parse_predict_request()
+        return jsonify(generate_quote_breakdown(category, price, weight))
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
         # Impose a minimum billable weight of 2 lbs for the model to prevent undercharging
         prediction_weight = max(2, weight)
@@ -136,18 +143,69 @@ def calculate():
         service_charge = round(rounded_total_cost - tt_cost - tax - shipping, 2)
         total_cost = float(rounded_total_cost)
 
-        return jsonify(
-            {
-                "item_cost": tt_cost,
-                "tax": tax,
-                "shipping": shipping,
-                "service_charge": service_charge,
-                "total_cost": total_cost,
-            }
+@app.route("/extension/quote", methods=["POST"])
+def extension_quote():
+    auth_error = _require_extension_auth()
+    if auth_error:
+        body, status = auth_error
+        return jsonify(body), status
+
+    rate_limit_error = _enforce_extension_rate_limit()
+    if rate_limit_error:
+        body, status = rate_limit_error
+        return jsonify(body), status
+
+    try:
+        payload = request.get_json() or {}
+        title = str(payload.get("title") or "").strip()
+        page_url = str(payload.get("page_url") or "").strip()
+        price_usd = float(payload["price_usd"])
+        currency = str(payload.get("currency") or "").strip().upper()
+        if not title:
+            raise ValueError("Product title is required")
+        if not page_url:
+            raise ValueError("Product URL is required")
+        if currency != "USD":
+            raise ValueError("Only USD prices are currently supported")
+
+        classification, warnings = classify_extension_payload(payload)
+        quote = generate_quote_breakdown(
+            classification["category"],
+            price_usd,
+            classification["billable_weight_lbs"],
         )
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        app.logger.info(
+            "extension_quote source=%s product_id=%s category=%s weight=%s confidence=%s",
+            payload.get("source"),
+            payload.get("product_id"),
+            classification["category"],
+            classification["billable_weight_lbs"],
+            classification["confidence"],
+        )
+
+        return (
+            jsonify(
+                {
+                    "product": {
+                        "title": title,
+                        "product_id": payload.get("product_id"),
+                        "page_url": page_url,
+                        "price_usd": price_usd,
+                        "currency": currency,
+                    },
+                    "classification": classification,
+                    "quote": quote,
+                    "warnings": warnings,
+                }
+            ),
+            200,
+        )
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception:
+        app.logger.exception("Failed to generate extension quote")
+        return jsonify({"error": "Unable to generate quote"}), 500
 
 
 if __name__ == "__main__":
