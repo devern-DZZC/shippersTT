@@ -10,6 +10,7 @@ numpy
 pandas
 scikit-learn==1.6.1
 joblib
+litellm
 
 Flask-SQLAlchemy==3.0.1
 SQLAlchemy>=1.4,<2.0

@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "ShippersTT Cost Estimation",
+  "version": "0.1.0",
+  "description": "Internal Amazon product page quote widget for ShippersTT.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.amazon.com/*", "http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "src/background.ts",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "ShippersTT Cost Estimation",
+    "default_icon": "shippers_logo.jpeg"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.amazon.com/*"],
+      "js": ["src/content.tsx"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["shippers_logo.jpeg"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "shippers_logo.jpeg",
+    "48": "shippers_logo.jpeg",
+    "128": "shippers_logo.jpeg"
+  }
+}
