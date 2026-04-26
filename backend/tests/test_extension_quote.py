@@ -67,6 +67,52 @@ class ExtensionQuoteRouteTests(unittest.TestCase):
         self.assertEqual(payload["classification"]["billable_weight_lbs"], 3)
         self.assertEqual(payload["quote"], predict_payload)
 
+    def test_extension_quote_rounds_decimal_weight_up_and_applies_one_to_two_lb_rule(self) -> None:
+        response = self.client.post(
+            "/extension/quote",
+            headers=self._auth_headers(),
+            json={
+                "source": "amazon",
+                "page_url": "https://www.amazon.com/dp/B000TEST07",
+                "product_id": "B000TEST07",
+                "title": "Lightweight Phone Case",
+                "price_usd": 40.0,
+                "currency": "USD",
+                "scraped_weight_lbs": 1.1,
+                "scraped_category_hint": None,
+                "overrides": {"category": "phone", "weight_lbs": None},
+            },
+        )
+
+        predict_response = self.client.post(
+            "/predict",
+            json={"category": "phone", "price": 40.0, "weight": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(predict_response.status_code, 200)
+
+        payload = response.get_json()
+        predict_payload = predict_response.get_json()
+
+        self.assertEqual(payload["classification"]["estimated_weight_lbs"], 2)
+        self.assertEqual(payload["classification"]["billable_weight_lbs"], 2)
+        self.assertEqual(payload["quote"], predict_payload)
+
+    def test_predict_treats_one_lb_as_two_lb_for_pricing(self) -> None:
+        response = self.client.post(
+            "/predict",
+            json={"category": "phone", "price": 40.0, "weight": 1},
+        )
+        comparison_response = self.client.post(
+            "/predict",
+            json={"category": "phone", "price": 40.0, "weight": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(comparison_response.status_code, 200)
+        self.assertEqual(response.get_json(), comparison_response.get_json())
+
     def test_manual_override_is_cached_for_future_quotes(self) -> None:
         initial_response = self.client.post(
             "/extension/quote",

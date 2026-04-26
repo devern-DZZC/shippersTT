@@ -71,7 +71,7 @@ class ExtensionQuoteBehaviorTests(unittest.TestCase):
 
         self.assertEqual(classification["category"], "shoes")
         self.assertEqual(classification["billable_weight_lbs"], 3)
-        self.assertEqual(classification["estimated_weight_lbs"], 2.4)
+        self.assertEqual(classification["estimated_weight_lbs"], 3)
         self.assertEqual(classification["source"], "llm")
         self.assertEqual(warnings, [])
         llm_mock.assert_called_once()
@@ -98,7 +98,7 @@ class ExtensionQuoteBehaviorTests(unittest.TestCase):
 
         self.assertEqual(classification["category"], "other")
         self.assertEqual(classification["estimated_weight_lbs"], 1.0)
-        self.assertEqual(classification["billable_weight_lbs"], 1)
+        self.assertEqual(classification["billable_weight_lbs"], 2)
         self.assertIn("LLM output was invalid", warnings)
         self.assertIn("Classification confidence is low. Edit category or weight if needed.", warnings)
 

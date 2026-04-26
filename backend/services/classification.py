@@ -6,7 +6,7 @@ from typing import Any
 
 from models import ClassificationCache, db
 from services.constants import ALLOWED_CATEGORIES, CATEGORY_ALIASES, RULE_KEYWORDS, WEIGHT_HINTS_LBS
-from services.quote_engine import billable_weight_lbs
+from services.quote_engine import billable_weight_lbs, normalized_weight_lbs
 
 
 DEFAULT_LLM_MODEL = "openai/gpt-oss-20b"
@@ -41,7 +41,7 @@ def parse_weight_lbs(value: Any) -> float | None:
         return None
     if weight <= 0 or weight > MAX_REASONABLE_WEIGHT_LBS:
         return None
-    return round(weight, 2)
+    return normalized_weight_lbs(weight)
 
 
 def classify_by_rules(title: str, breadcrumb: str | None, variant: str | None) -> tuple[str | None, str | None]:

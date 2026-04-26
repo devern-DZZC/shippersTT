@@ -9,7 +9,7 @@ from flask_cors import CORS
 
 from models import db
 from services.classification import classify_extension_payload
-from services.quote_engine import generate_quote_breakdown
+from services.quote_engine import billable_weight_lbs, generate_quote_breakdown
 
 
 app = Flask(__name__)
@@ -75,11 +75,11 @@ def _require_extension_auth() -> tuple[dict[str, str], int] | None:
 
 
 def _enforce_extension_rate_limit() -> tuple[dict[str, str], int] | None:
-    identifier = request.headers.get("Authorization") or request.remote_addr or "anonymous"
+    identifier = request.remote_addr or "anonymous"
     limit = int(app.config["EXTENSION_RATE_LIMIT"])
     window_seconds = int(app.config["EXTENSION_RATE_WINDOW_SECONDS"])
     if not extension_rate_limiter.allow(identifier, limit, window_seconds):
-        return {"error": "Rate limit exceeded"}, 429
+        return {"error": "Rate limit exceeded. Please wait 30 seconds before generating another quote."}, 429
     return None
 
 
@@ -89,12 +89,12 @@ def _parse_predict_request() -> tuple[float, str, int]:
         data = request.get_json() or {}
         price = float(data["price"])
         category = str(data["category"])
-        weight = int(data["weight"])
+        weight = billable_weight_lbs(float(data["weight"]))
     else:
         data = request.form
         price = float(data["price"])
         category = str(data["category"])
-        weight = int(data["weight"])
+        weight = billable_weight_lbs(float(data["weight"]))
 
     return price, category, weight
 
@@ -117,31 +117,6 @@ def calculate():
         return jsonify(generate_quote_breakdown(category, price, weight))
     except Exception as exc:
         return jsonify({"error": str(exc)}), 400
-
-        # Impose a minimum billable weight of 2 lbs for the model to prevent undercharging
-        prediction_weight = max(2, weight)
-        
-        input_data = {"category": [category], "weight": [prediction_weight]}
-        input_df = pd.DataFrame(input_data)
-        transformed_df = transformer.transform(input_df)
-        shipping = float(model.predict(transformed_df)[0])
-
-        tt_cost = round(price * 6.8, 2)
-        tax = round(tt_cost * 0.07, 2)
-        
-        # Calculate base service charge (15%)
-        base_service_charge = (tt_cost + tax + shipping) * 0.15
-        
-        # Enforce a minimum service charge (profit) of $50 TTD
-        raw_service_charge = round(max(50.0, base_service_charge), 2)
-        raw_total_cost = tt_cost + tax + shipping + raw_service_charge
-        
-        # Round final cost to the nearest ten (1-4 down, 5-9 up)
-        rounded_total_cost = int((raw_total_cost + 5) // 10 * 10)
-        
-        # Adjust service charge so that all fees add up to the rounded final cost
-        service_charge = round(rounded_total_cost - tt_cost - tax - shipping, 2)
-        total_cost = float(rounded_total_cost)
 
 @app.route("/extension/quote", methods=["POST"])
 def extension_quote():
